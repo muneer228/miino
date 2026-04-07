@@ -5,5 +5,15 @@
     "directory": ".",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
-  }
+  },
+  "routes": [
+    {
+      "pattern": "miino.xyz",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.miino.xyz",
+      "custom_domain": true
+    }
+  ]
 }
