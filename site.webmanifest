@@ -1,0 +1,17 @@
+{
+  "name": "Miino",
+  "short_name": "Miino",
+  "description": "Miino — personal lab, research, and self-hosted projects.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08111e",
+  "theme_color": "#08111e",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

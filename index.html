@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Miino — Research, Software, and Self-Hosted Systems</title>
+  <meta name="description" content="Miino is a personal lab for research engineering, self-hosted tools, Linux workflows, interface experiments, and data-driven projects." />
+  <meta name="theme-color" content="#08111e" />
+  <meta name="application-name" content="Miino" />
+  <meta name="color-scheme" content="dark" />
+  <meta property="og:site_name" content="Miino" />
+  <meta property="og:title" content="Miino — Research, Software, and Self-Hosted Systems" />
+  <meta property="og:description" content="A personal lab for research engineering, self-hosted tools, Linux workflows, and polished experiments." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://miino.xyz/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Miino — Research, Software, and Self-Hosted Systems" />
+  <meta name="twitter:description" content="A personal lab for research engineering, self-hosted tools, Linux workflows, and polished experiments." />
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <rect width="64" height="64" rx="16" fill="%2308111e"/>
+    <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="34">✨</text>
+  </svg>' />
+  <style>
+    :root {
+      --bg: #06101d;
+      --bg-2: #091729;
+      --panel: rgba(12, 22, 40, 0.72);
+      --panel-2: rgba(255, 255, 255, 0.04);
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #edf4ff;
+      --muted: #a7b8d3;
+      --muted-2: #87a0c0;
+      --accent: #7ad2ff;
+      --accent-2: #b09bff;
+      --success: #8af0b8;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+      --radius: 24px;
+      --radius-lg: 32px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(122,210,255,0.12), transparent 32%),
+        radial-gradient(circle at top right, rgba(176,155,255,0.12), transparent 28%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 40%, #060d17 100%);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(calc(100% - 2rem), var(--max)); margin: 0 auto; }
+    .section { padding: 1.2rem 0 0.5rem; }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      letter-spacing: -0.04em;
+    }
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 58ch;
+    }
+
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(6, 13, 23, 0.58);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.95rem 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(122,210,255,0.22), rgba(176,155,255,0.22));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 10px 30px rgba(122,210,255,0.12);
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible { color: var(--text); }
+
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      min-height: 46px;
+      padding: 0.9rem 1.15rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-weight: 650;
+      transition: 180ms ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(122,210,255,0.16), rgba(176,155,255,0.16));
+      border-color: rgba(122,210,255,0.36);
+      box-shadow: 0 14px 35px rgba(122,210,255,0.1);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+      padding: 5.2rem 0 2.5rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(122,210,255,0.2);
+      background: rgba(122,210,255,0.08);
+      color: #d5efff;
+      border-radius: 999px;
+      padding: 0.58rem 0.85rem;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 6px rgba(138,240,184,0.12);
+      flex: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.9rem, 5vw, 5.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      max-width: 11ch;
+    }
+
+    .lead {
+      margin: 1.2rem 0 0;
+      max-width: 61ch;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.82;
+    }
+
+    .hero-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+      margin-top: 1.45rem;
+    }
+
+    .mini-stat {
+      padding: 1rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.35rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .mini-stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      padding: 1.2rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, rgba(122,210,255,0.24), transparent 35%, rgba(176,155,255,0.22));
+      opacity: 0.85;
+      z-index: 0;
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 1;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(7,17,31,0.9), rgba(7,17,31,0.98));
+      padding: 1.25rem;
+    }
+
+    .terminal-top {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .terminal-top span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .code {
+      font-family: "JetBrains Mono", "SFMono-Regular", ui-monospace, monospace;
+      font-size: 0.94rem;
+      line-height: 1.85;
+      color: #daeaff;
+    }
+
+    .code .comment { color: #7f97b8; }
+    .code .key { color: #8fdcff; }
+    .code .value { color: #cabfff; }
+    .code .ok { color: #9ef4b5; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 0.45rem 0.72rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d0ddf1;
+      font-size: 0.84rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid.projects,
+    .grid.services {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid.links {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 999px;
+      padding: 0.42rem 0.72rem;
+      margin-bottom: 0.85rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d6e8ff;
+      font-size: 0.8rem;
+    }
+
+    .card h3 {
+      margin: 0 0 0.6rem;
+      font-size: 1.18rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.76;
+    }
+
+    .stack-list {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .stack-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stack-row:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .stack-row strong {
+      flex: 0 0 150px;
+      color: #d8e8ff;
+    }
+
+    .stack-row span {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .link-card {
+      display: block;
+      min-height: 164px;
+      padding: 1.1rem;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: 180ms ease;
+    }
+
+    .link-card:hover,
+    .link-card:focus-visible {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.16);
+    }
+
+    .link-card strong {
+      display: block;
+      margin-bottom: 0.42rem;
+      font-size: 1rem;
+    }
+
+    .link-card span {
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 0.94rem;
+    }
+
+    .footer {
+      padding: 2.5rem 0 4rem;
+      color: var(--muted);
+    }
+
+    .footer-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 1.5rem;
+    }
+
+    @media (max-width: 1080px) {
+      .hero,
+      .grid.projects,
+      .grid.services,
+      .grid.links {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero {
+        align-items: stretch;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero,
+      .grid.projects,
+      .grid.services,
+      .grid.links,
+      .hero-highlights {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .stack-row {
+        flex-direction: column;
+      }
+
+      .hero {
+        padding-top: 3.5rem;
+      }
+
+      h1 {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <div class="container">
+      <nav aria-label="Main navigation">
+        <a class="brand" href="#top" aria-label="Miino home">
+          <span class="brand-mark" aria-hidden="true">✨</span>
+          <span>miino.xyz</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="#projects">Projects</a>
+          <a href="#services">Services</a>
+          <a href="#stack">Stack</a>
+          <a href="#links">Links</a>
+        </div>
+
+        <div class="cta-group">
+          <a class="btn" href="#links">Explore</a>
+          <a class="btn primary" href="https://isaa2026.miino.xyz" target="_blank" rel="noreferrer noopener">Open demo</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <main id="top" class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Research lab · software workshop · self-hosted ecosystem</div>
+        <h1>Miino is where research, software, and infrastructure become real.</h1>
+        <p class="lead">
+          A personal lab for building polished tools, self-hosted systems, interface experiments, and data-driven research projects.
+          Miino brings together Linux workflows, cloud-connected infrastructure, and practical prototypes that are meant to run, not just stay as ideas.
+        </p>
+
+        <div class="cta-group" style="margin-top: 1.45rem;">
+          <a class="btn primary" href="#projects">View projects</a>
+          <a class="btn" href="#services">See services</a>
+        </div>
+
+        <div class="pill-row" aria-label="Miino themes">
+          <span class="pill">Arch Linux</span>
+          <span class="pill">Cloudflare</span>
+          <span class="pill">Research engineering</span>
+          <span class="pill">QML & plugins</span>
+          <span class="pill">AI workflows</span>
+          <span class="pill">Self-hosted apps</span>
+        </div>
+
+        <div class="hero-highlights" aria-label="Site highlights">
+          <div class="mini-stat">
+            <strong>01</strong>
+            <span>One home for projects, demos, and experiments</span>
+          </div>
+          <div class="mini-stat">
+            <strong>24/7</strong>
+            <span>Cloud-hosted homepage with room for live services</span>
+          </div>
+          <div class="mini-stat">
+            <strong>∞</strong>
+            <span>Still growing into a full Miino ecosystem</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Miino system snapshot">
+        <div class="hero-card-inner">
+          <div class="terminal-top"><span></span><span></span><span></span></div>
+          <div class="code">
+            <div><span class="comment"># miino snapshot</span></div>
+            <div><span class="key">brand</span>: <span class="value">personal lab + public front door</span></div>
+            <div><span class="key">homepage</span>: <span class="value">cloud-hosted static site</span></div>
+            <div><span class="key">services</span>: <span class="value">mix of online + self-hosted apps</span></div>
+            <div><span class="key">focus</span>: <span class="value">research, systems, interface design</span></div>
+            <div><span class="key">status</span>: <span class="ok">online ✨</span></div>
+          </div>
+          <div class="pill-row">
+            <span class="pill">miino.xyz</span>
+            <span class="pill">www.miino.xyz</span>
+            <span class="pill">docwatch.miino.xyz</span>
+            <span class="pill">isaa2026.miino.xyz</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="section-head">
+        <div><h2>Featured work</h2></div>
+        <p>
+          Projects shaped by practical problem-solving: tools that monitor, visualize, automate, or communicate research and system activity in a way that feels polished and useful.
+        </p>
+      </div>
+
+      <div class="grid projects">
+        <article class="card">
+          <span class="tag">Self-hosted workflow</span>
+          <h3>Google Docs Watcher</h3>
+          <p>
+            A document-change workflow with local bridge endpoints, structured state, and desktop-facing notifications so important updates stay visible without living in the browser.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag">Interface experiments</span>
+          <h3>DMS plugin development</h3>
+          <p>
+            Custom components and interaction ideas for DankMaterialShell, including compact status surfaces, popouts, and utility-first desktop experiences.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag">Research engineering</span>
+          <h3>Bioinformatics and AI tooling</h3>
+          <p>
+            Data workflows connecting transcriptomics, explainable retrieval, and computational analysis with clearer visual outputs, stronger tooling, and better repeatability.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="services" class="section">
+      <div class="section-head">
+        <div><h2>Live services</h2></div>
+        <p>
+          Miino is not only a landing page. It is a growing entry point for real tools, public demos, and project-specific endpoints across the domain.
+        </p>
+      </div>
+
+      <div class="grid services">
+        <article class="card">
+          <span class="tag">Main site</span>
+          <h3>miino.xyz</h3>
+          <p>
+            The public homepage and identity layer for the wider Miino ecosystem, designed to stay clean, fast, and easy to expand over time.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag">Research demo</span>
+          <h3>ISAA 2026 showcase</h3>
+          <p>
+            A project page for poster demos, conference material, and interactive research presentation work built around explainable biological retrieval ideas.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag">Utility service</span>
+          <h3>DocWatch endpoint</h3>
+          <p>
+            A dedicated home for document monitoring, state exchange, and notification workflows that bridge editing activity into your wider system.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="stack" class="section">
+      <div class="section-head">
+        <div><h2>Stack and direction</h2></div>
+        <p>
+          The stack is intentionally small, inspectable, and modular: local-first when needed, cloud-hosted when it makes sense, and ready for more public-facing apps.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="stack-list">
+          <div class="stack-row">
+            <strong>System</strong>
+            <span>Arch Linux, local development, small services, and an emphasis on direct control over tooling and deployment.</span>
+          </div>
+          <div class="stack-row">
+            <strong>Network</strong>
+            <span>Cloudflare-backed routing for public access, with the flexibility to split static hosting from laptop-hosted apps.</span>
+          </div>
+          <div class="stack-row">
+            <strong>Design</strong>
+            <span>Minimal but expressive interfaces with strong emphasis on readability, visual polish, and practical information density.</span>
+          </div>
+          <div class="stack-row">
+            <strong>Direction</strong>
+            <span>A home for project pages, hosted demos, publications, notes, downloads, and future tools under one clear brand.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="links" class="section">
+      <div class="section-head">
+        <div><h2>Useful destinations</h2></div>
+        <p>
+          The homepage can also work as a launchpad for the rest of the domain. Keep these as-is for now, then swap them as your public footprint grows.
+        </p>
+      </div>
+
+      <div class="grid links">
+        <a class="link-card" href="https://miino.xyz" target="_blank" rel="noreferrer noopener">
+          <strong>Main homepage</strong>
+          <span>The main public-facing site and the cleanest entry point into the Miino ecosystem.</span>
+        </a>
+        <a class="link-card" href="https://isaa2026.miino.xyz" target="_blank" rel="noreferrer noopener">
+          <strong>ISAA 2026 demo</strong>
+          <span>Poster materials, project demonstrations, and research-facing pages that deserve their own home.</span>
+        </a>
+        <a class="link-card" href="https://docwatch.miino.xyz" target="_blank" rel="noreferrer noopener">
+          <strong>DocWatch</strong>
+          <span>Document monitoring and update-aware workflows exposed through a clean domain structure.</span>
+        </a>
+        <a class="link-card" href="mailto:hello@miino.xyz">
+          <strong>Contact</strong>
+          <span>Replace this later with your real preferred contact, GitHub, CV, or publication links.</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <div class="footer-box">
+      <span>© <span id="year"></span> Miino. Built with curiosity, polished for the web.</span>
+      <div class="pill-row" style="margin-top: 0;">
+        <span class="pill">Research</span>
+        <span class="pill">Software</span>
+        <span class="pill">Infrastructure</span>
+        <span class="pill">✨</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
